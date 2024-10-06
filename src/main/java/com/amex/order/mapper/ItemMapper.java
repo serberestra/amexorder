@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @Component
 public class ItemMapper {
 
-    private static Set<Item> items = Stream.of(
+    private static final Set<Item> items = Stream.of(
             AppleItem.builder().build(),
             OrangeItem.builder().build()
     ).collect(Collectors.toCollection(HashSet::new));

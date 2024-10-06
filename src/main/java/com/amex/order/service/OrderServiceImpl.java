@@ -2,7 +2,6 @@ package com.amex.order.service;
 
 import com.amex.order.dto.AmexOrderRequestDto;
 import com.amex.order.dto.AmexOrderResponseDto;
-import com.amex.order.exception.NotFoundException;
 import com.amex.order.mapper.ItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
