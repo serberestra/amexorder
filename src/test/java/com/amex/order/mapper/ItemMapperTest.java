@@ -1,36 +1,57 @@
 package com.amex.order.mapper;
 
 import com.amex.order.dto.ItemRequestDto;
-import com.amex.order.model.GoodsEnum;
+import com.amex.order.exception.NotFoundException;
+import com.amex.order.model.AppleItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.amex.order.OrderConstants.APPLE;
+import static com.amex.order.utils.OrderConstants.APPLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ItemMapperTest {
 
-    ItemRequestDto apples;
+    ItemRequestDto appleRequest;
 
     private ItemMapper itemMapper;
 
     @BeforeEach
     void setUp() {
         itemMapper = new ItemMapper();
+        appleRequest = ItemRequestDto.builder().itemName(APPLE).quantity(10).build();
     }
 
     @Test
-    @DisplayName("Valid Map Item Request DTO To Response DTO")
+    @DisplayName("When Valid Map Item Request DTO Then Valid Response DTO")
     public void validMapItemRequestDTOToResponseDTO() {
-        var appleEnum = GoodsEnum.valueOf(APPLE.toUpperCase());
-        apples = ItemRequestDto.builder().itemName(APPLE).quantity(10).build();
+        var apple = AppleItem.builder().build();
+        apple.setQuantity(appleRequest.getQuantity());
 
-        var result = itemMapper.toItemResponseDto(apples);
-        assertEquals(appleEnum.name(), result.getItemName());
-        assertEquals(appleEnum.getValue(), result.getItemPrice());
-        assertEquals(apples.getQuantity(), result.getQuantity());
-        assertEquals(appleEnum.getValue() * apples.getQuantity(), result.getTotal());
+        var result = itemMapper.toItemResponseDto(appleRequest);
+
+        assertEquals(apple.name(), result.getItemName());
+        assertEquals(apple.price(), result.getItemPrice());
+        assertEquals(appleRequest.getQuantity(), result.getQuantity());
+        assertEquals(apple.total(), result.getTotal());
+    }
+
+    @Test
+    @DisplayName("When Name Item Not Found Then Exception")
+    public void whenNameItemNotFound() {
+        appleRequest.setItemName("apples");
+        var apple = AppleItem.builder().build();
+        apple.setQuantity(appleRequest.getQuantity());
+
+        Exception exception = assertThrows(
+                NotFoundException.class,
+                () -> itemMapper.toItemResponseDto(appleRequest)
+        );
+
+        assertNotNull(exception);
+        assertEquals("Item 'apples' not found",exception.getMessage());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.amex.order;
+package com.amex.order.utils;
 
 public class OrderConstants {
 

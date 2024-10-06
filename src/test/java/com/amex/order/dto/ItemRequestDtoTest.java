@@ -1,6 +1,6 @@
 package com.amex.order.dto;
 
-import com.amex.order.OrderConstants;
+import com.amex.order.utils.OrderConstants;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -32,9 +32,29 @@ class ItemRequestDtoTest {
     }
 
     @Test
-    @DisplayName("When Name Not Match Value Enum Then Exception")
-    public void whenStringQuantityThenException() {
-        var itemRequest = ItemRequestDto.builder().itemName("apples").quantity(10).build();
+    @DisplayName("When Quantity Less Than or Equals to ZERO Then Exception")
+    public void whenQuantityLessThanOrEqualToZeroThenException() {
+        var itemRequest = ItemRequestDto.builder().itemName(OrderConstants.APPLE).quantity(-10).build();
+
+        Set<ConstraintViolation<ItemRequestDto>> violations = validator.validate(itemRequest);
+
+        assertThat(violations.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("When Empty Name Then Exception")
+    public void whenEmptyNameThenException() {
+        var itemRequest = ItemRequestDto.builder().itemName("").quantity(10).build();
+
+        Set<ConstraintViolation<ItemRequestDto>> violations = validator.validate(itemRequest);
+
+        assertThat(violations.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("When Null Name Then Exception")
+    public void whenNullNameThenException() {
+        var itemRequest = ItemRequestDto.builder().quantity(10).build();
 
         Set<ConstraintViolation<ItemRequestDto>> violations = validator.validate(itemRequest);
 

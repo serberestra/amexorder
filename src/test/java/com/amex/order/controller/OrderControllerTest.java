@@ -4,7 +4,8 @@ import com.amex.order.dto.AmexOrderRequestDto;
 import com.amex.order.dto.AmexOrderResponseDto;
 import com.amex.order.dto.ItemRequestDto;
 import com.amex.order.dto.ItemResponseDto;
-import com.amex.order.model.GoodsEnum;
+import com.amex.order.model.AppleItem;
+import com.amex.order.model.OrangeItem;
 import com.amex.order.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static com.amex.order.OrderConstants.APPLE;
-import static com.amex.order.OrderConstants.ORANGE;
+import static com.amex.order.utils.OrderConstants.APPLE;
+import static com.amex.order.utils.OrderConstants.ORANGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -25,8 +26,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTest {
 
-    ItemRequestDto apples;
-    ItemRequestDto oranges;
+    ItemRequestDto appleRequest;
+    ItemRequestDto orangeRequest;
 
     @Mock
     private OrderService orderService;
@@ -36,31 +37,33 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        apples = ItemRequestDto.builder().itemName(APPLE).quantity(10).build();
-        oranges = ItemRequestDto.builder().itemName(ORANGE).quantity(10).build();
+        appleRequest = ItemRequestDto.builder().itemName(APPLE).quantity(10).build();
+        orangeRequest = ItemRequestDto.builder().itemName(ORANGE).quantity(10).build();
     }
 
     @Test
     @DisplayName("When Valid Request Then Valid Response")
     public void whenValidRequestThenValidResponse() {
         var request = new AmexOrderRequestDto();
-        request.setItem(apples);
-        request.setItem(oranges);
+        request.setItem(appleRequest);
+        request.setItem(orangeRequest);
 
-        var appleEnum = GoodsEnum.valueOf(APPLE.toUpperCase());
+        var apple = AppleItem.builder().build();
+        apple.setQuantity(appleRequest.getQuantity());
         var appleResponse = ItemResponseDto.builder()
-                .itemName(apples.getItemName())
-                .itemPrice(appleEnum.getValue())
-                .quantity(apples.getQuantity())
-                .total(appleEnum.getValue() * apples.getQuantity())
+                .itemName(apple.name())
+                .itemPrice(apple.price())
+                .quantity(apple.quantity())
+                .total(apple.total())
                 .build();
 
-        var orangeEnum = GoodsEnum.valueOf(ORANGE.toUpperCase());
+        var orange = OrangeItem.builder().build();
+        orange.setQuantity(orangeRequest.getQuantity());
         var orangeResponse = ItemResponseDto.builder()
-                .itemName(oranges.getItemName())
-                .itemPrice(orangeEnum.getValue())
-                .quantity(oranges.getQuantity())
-                .total(orangeEnum.getValue() * oranges.getQuantity())
+                .itemName(orange.name())
+                .itemPrice(orange.price())
+                .quantity(orange.quantity())
+                .total(orange.total())
                 .build();
 
         AmexOrderResponseDto amexOrderResponseDto = new AmexOrderResponseDto();

@@ -1,7 +1,8 @@
 package com.amex.order.dto;
 
-import com.amex.order.model.GoodsEnum;
-import com.amex.order.utils.ValueOfEnum;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class ItemRequestDto {
 
-    @ValueOfEnum(enumClass = GoodsEnum.class)
+    @NotBlank
     private String itemName;
 
     @NotNull
+    @Min(1)
     private Integer quantity;
 
 }
